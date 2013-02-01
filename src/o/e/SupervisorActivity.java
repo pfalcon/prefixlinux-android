@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

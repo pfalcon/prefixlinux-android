@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 public interface TitleFragment {
 	public String getTitle();

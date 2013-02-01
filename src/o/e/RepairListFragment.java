@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.botbrew.basil.Shell.Pipe;
+import o.e.Shell.Pipe;
 
 class RepairListLoader extends AsyncTaskLoader<ArrayList<String>> {
 	private ArrayList<String> mData;

@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;
@@ -12,7 +12,7 @@ import android.net.Uri;
 
 public class PackageCacheProvider extends ContentProvider {
 	private DatabaseOpenHelper mDB;
-	private static final String AUTHORITY = "com.botbrew.basil.data.packagecacheprovider";
+	private static final String AUTHORITY = "o.e.data.packagecacheprovider";
 	private static UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	public static enum ContentUri {
 		NULL("",""),

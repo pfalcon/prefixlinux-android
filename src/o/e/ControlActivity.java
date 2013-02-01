@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

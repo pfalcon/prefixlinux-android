@@ -1,4 +1,4 @@
-package com.botbrew.basil;
+package o.e;
 
 import jackpal.androidterm.emulatorview.ColorScheme;
 import jackpal.androidterm.emulatorview.EmulatorView;
