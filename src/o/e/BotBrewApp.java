@@ -24,6 +24,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import utils.UnixShell;
+
 @ReportsCrashes(
 	formKey="dEVFcXVwU01rcE9EcHVrWktILXNvX3c6MQ",
 	mode = ReportingInteractionMode.NOTIFICATION,
@@ -40,11 +42,12 @@ public class BotBrewApp extends Application {
 	public BootstrapActivity.DialogState mBootstrapDialogState = BootstrapActivity.DialogState.NONE;
 	@Override
 	public void onCreate() {
-		ACRA.init(this);
+//		ACRA.init(this);
 		super.onCreate();
 	}
 	public String root() {
-		return PreferenceManager.getDefaultSharedPreferences(this).getString("var_root",default_root);
+		return getApplicationInfo().dataDir + "/r";
+		//return PreferenceManager.getDefaultSharedPreferences(this).getString("var_root",default_root);
 	}
 	public void root(final String s) {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -65,16 +68,51 @@ public class BotBrewApp extends Application {
 	}
 	public boolean isInstalled(final File path) {
 		if(!path.isDirectory()) return false;
-		final File path_init = new File(path,"init");
-		if(path_init.isFile()) return checkInstall(path,false);
-		final File path_img = new File(path,"fs.img");
-		if(path_img.isFile()) return checkInstall(path,true);
-		return false;
+		final File path_bin = new File(path, "bin");
+		if (!path_bin.isDirectory()) return false;
+		final File path_opkg = new File(path_bin, "opkg-static");
+		if (!path_opkg.isFile()) return false;
+		return true;
 	}
 	public boolean isInstalled() {
 		return isInstalled(new File(root()));
 	}
 	public boolean checkInstall(final File path, final boolean remount) {
+		if (isInstalled()) {
+		    Log.d(TAG, "Already installed");
+		    return true;
+		}
+
+		UnixShell.mkdir_p(root());
+		try {
+		    UnixShell.chmod(root(), 0755);
+		    UnixShell sh = new UnixShell(getAssets());
+		    sh.untarAssets("opkg.tar", root());
+		} catch (IOException e) {
+		    Log.e(TAG, "Error while extracting opkg install files from assets", e);
+		    return false;
+		}
+
+		Log.d(TAG, "Installed opkg-static and support files");
+
+		try {
+		    // Set permissions to make dropbear happy
+		    UnixShell.chmod(root() + "/home/admin", 0755);
+		    UnixShell.chmod(root() + "/home/admin/.ssh", 0755);
+		    String uid = Integer.toString(getApplicationInfo().uid);
+		    String passwdEntry = "admin:x:" + uid + ":" + uid + ":admin:/data/data/o.e/r/home/admin:/data/data/o.e/r/bin/sh\n";
+		    UnixShell.appendToFile(root() + "/etc/passwd", passwdEntry);
+		} catch (IOException e) {
+		    Log.e(TAG, "Error while configuring dir structure", e);
+		    return false;
+		}
+
+		// ~Final touch - make our app dir world-readable, too.~
+		// If we do this, run-as won't be able to run against us
+		//UnixShell.chmod(getApplicationInfo().dataDir, 0755);
+		return true;
+
+/*
 		if(!path.isDirectory()) return false;
 		final File path_init_src = (new File(new File(getCacheDir().getParent(),"lib"),"libinit.so"));
 		final File path_init = new File(path,"init");
@@ -113,6 +151,7 @@ public class BotBrewApp extends Application {
 			Log.v(TAG,"InterruptedException");
 		}
 		return false;
+*/
 	}
 	public boolean nativeInstall(final File path) {
 		try {
