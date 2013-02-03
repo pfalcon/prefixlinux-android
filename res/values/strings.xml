@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="hello">Hello World, Main!</string>
-	<string name="app_name">BotBrew Basil</string>
-	<string name="app_shortname">BotBrew</string>
+	<string name="app_name">OE Android</string>
+	<string name="app_shortname">OE</string>
 	<string name="app_codename">basil</string>
 	<string name="app_name_bootstrap">Bootstrap</string>
 	<string name="filename_default">botbrew-basil</string>
