@@ -86,7 +86,7 @@
 			android:enabled="true" />
 		<provider
 			android:name=".PackageCacheProvider"
-			android:authorities="com.botbrew.basil.data.packagecacheprovider"
+			android:authorities="o.e.data.packagecacheprovider"
 			android:exported="false" />
 		<meta-data
 			android:name="android.app.default_searchable"
