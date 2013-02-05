@@ -106,7 +106,8 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 	public void doInfo(final CharSequence pkg) {
 		PreferenceManager.setDefaultValues(this,R.xml.preference,false);
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+//		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+		final String root = mApp.root();
 		final DebianPackageManager dpm = new DebianPackageManager(root);
 		(new AsyncTask<Void,CharSequence,Integer>() {
 			@Override
@@ -216,7 +217,8 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 	public void doAptGet(final TransactionType what, final CharSequence... pkg) {
 		PreferenceManager.setDefaultValues(this,R.xml.preference,false);
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+//		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+		final String root = mApp.root();
 		final DebianPackageManager dpm = new DebianPackageManager(root);
 		Shell sh = null;
 		try {
@@ -306,7 +308,8 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 	public void doDpkgInstall(final CharSequence... pkg) {
 		PreferenceManager.setDefaultValues(this,R.xml.preference,false);
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+//		final String root = (new File(pref.getString("var_root",BotBrewApp.default_root))).getAbsolutePath();
+		final String root = mApp.root();
 		final DebianPackageManager dpm = new DebianPackageManager(root);
 		mLocked = true;
 		final TermSession term0 = new TermSession();
