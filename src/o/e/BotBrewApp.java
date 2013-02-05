@@ -154,6 +154,7 @@ public class BotBrewApp extends Application {
 */
 	}
 	public boolean nativeInstall(final File path) {
+/*
 		try {
 			final MountFs.MountEntry mntent = MountFs.find(path);
 			if((mntent != null)&&("vfat".equals(mntent.fs_vfstype))) return checkInstall(path,true);
@@ -171,6 +172,7 @@ public class BotBrewApp extends Application {
 		} catch(IOException ex) {
 		} catch(InterruptedException ex) {
 		}
+*/
 		return false;
 	}
 	public boolean clean() {
