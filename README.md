@@ -10,6 +10,14 @@ and written to support that without major refactorings. So rather, this is a for
 which tears off complicated code from botbrew-gui to make it do one thing in
 more simple and clean way.
 
+Note that I'm currently build application using provided build.xml (which includes
+some customizations to handle assets in sane way), so building using Maven as
+described below may or may not work. It's recommended to install dependent
+libraries manually and use build.xml for now.
+
+
+Original content from botbrew-gui:
+
 Dependencies
 ============
 
