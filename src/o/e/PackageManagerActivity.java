@@ -226,33 +226,35 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 			switch(what) {
 				case APTGET_INSTALL:
 					mActionBar.setTitle("Install "+pkg[0]);
-					sh = Shell.Term.getRootShell();
+					sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.aptget_install(pkg));
 					break;
 				case APTGET_REINSTALL:
 					mActionBar.setTitle("Reinstall "+pkg[0]);
-					dpm.config(DebianPackageManager.Config.APT_Get_ReInstall,"1");
-					sh = Shell.Term.getRootShell();
-					sh.botbrew(root,dpm.aptget_install(pkg));
+//					dpm.config(DebianPackageManager.Config.APT_Get_ReInstall,"1");
+					sh = Shell.Term.getUserShell();
+					sh.botbrew(root,dpm.aptget_reinstall(pkg));
 					break;
 				case APTGET_UPGRADE:
 					mActionBar.setTitle("Upgrade "+pkg[0]);
-					sh = Shell.Term.getRootShell();
+					sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.aptget_upgrade(pkg));
 					break;
+/*
 				case APTGET_DISTUPGRADE:
 					mActionBar.setTitle("Dist-Upgrade "+pkg[0]);
-					sh = Shell.Term.getRootShell();
+					sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.aptget_distupgrade(pkg));
 					break;
+*/
 				case APTGET_REMOVE:
 					mActionBar.setTitle("Remove "+pkg[0]);
-					sh = Shell.Term.getRootShell();
+					sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.aptget_remove(pkg));
 					break;
 				case APTGET_AUTOREMOVE:
 					mActionBar.setTitle("Autoremove "+pkg[0]);
-					sh = Shell.Term.getRootShell();
+					sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.aptget_autoremove(pkg));
 					break;
 			}
@@ -320,7 +322,7 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 			@Override
 			protected Integer doInBackground(final Void... ign) {
 				try {
-					Shell sh = Shell.Term.getRootShell();
+					Shell sh = Shell.Term.getUserShell();
 					sh.botbrew(root,dpm.dpkg_install(pkg));
 					InputStream sh_stdout = sh.stdout();
 					while(sh_stdout.read() != '\n');
@@ -330,7 +332,8 @@ public class PackageManagerActivity extends SherlockFragmentActivity {
 					term0.setTermIn(sh.stdout());
 					publishProgress(term0);
 					if(sh.waitFor() == 0) return 0;
-					sh = Shell.Term.getRootShell();
+
+					sh = Shell.Term.getUserShell();
 					dpm.config(DebianPackageManager.Config.APT_Get_FixBroken,"1");
 					sh.botbrew(root,dpm.aptget_install());
 					sh_stdout = sh.stdout();

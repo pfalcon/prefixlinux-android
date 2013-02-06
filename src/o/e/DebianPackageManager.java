@@ -145,31 +145,36 @@ public class DebianPackageManager {
 		return sb.substring(1);
 	}
 	public String aptget_update() {
-		return "apt-get"+mkConfigStr()+" update";
+		return "/bin/opkg-static update";
 	}
 	public String aptget_upgrade() {
-		return "apt-get"+mkConfigStr()+" upgrade";
+		return "/bin/opkg-static upgrade";
 	}
 	public String aptget_upgrade(final CharSequence... pkg) {
-		return "apt-get"+mkConfigStr()+" upgrade "+qcat(pkg);
+		return "/bin/opkg-static upgrade "+qcat(pkg);
 	}
+/*
 	public String aptget_distupgrade() {
 		return "apt-get"+mkConfigStr()+" dist-upgrade";
 	}
 	public String aptget_distupgrade(final CharSequence... pkg) {
 		return "apt-get"+mkConfigStr()+" dist-upgrade "+qcat(pkg);
 	}
+*/
 	public String aptget_install() {
-		return "apt-get"+mkConfigStr()+" install";
+		return "/bin/opkg-static install";
 	}
 	public String aptget_install(final CharSequence... pkg) {
-		return "apt-get"+mkConfigStr()+" install "+qcat(pkg);
+		return "/bin/opkg-static install " + qcat(pkg);
+	}
+	public String aptget_reinstall(final CharSequence... pkg) {
+		return "/bin/opkg-static install --force-reinstall " + qcat(pkg);
 	}
 	public String aptget_remove(final CharSequence... pkg) {
-		return "apt-get"+mkConfigStr()+" remove "+qcat(pkg);
+		return "/bin/opkg-static remove " + qcat(pkg);
 	}
 	public String aptget_autoremove(final CharSequence... pkg) {
-		return "apt-get"+mkConfigStr()+" autoremove "+qcat(pkg);
+		return "/bin/opkg-static remove --autoremove " + qcat(pkg);
 	}
 	public String aptget_clean() {
 		return "apt-get"+mkConfigStr()+" clean";
@@ -178,22 +183,23 @@ public class DebianPackageManager {
 		return "apt-get"+mkConfigStr()+" autoclean";
 	}
 	public String aptcache_show(final CharSequence... pkg) {
-		return "apt-cache"+mkConfigStr()+" show "+qcat(pkg);
+		return "/bin/opkg-static info " + qcat(pkg);
 	}
 	public String aptcache_search() {
-		return "apt-cache"+mkConfigStr()+" search ''";
+		return "/bin/opkg-static list";
 	}
 	public String aptcache_search(final CharSequence... q) {
-		return "apt-cache"+mkConfigStr()+" search "+qcat(q);
+		return "/bin/opkg-static list " + qcat(q);
 	}
 	public String dpkgquery(final CharSequence q) {
-		return "dpkg-query "+q;
+		return "/bin/opkg-static " + q;
 	}
 	public String dpkg_install(final CharSequence... pkg) {
-		return "dpkg --install "+qcat(pkg);
+		return "/bin/opkg-static install " + qcat(pkg);
 	}
 	public boolean pm_writeconf(final File tmpdir) {
 		boolean success = true;
+/*
 		try {
 			File temp;
 			FileWriter tempwriter;
@@ -234,18 +240,21 @@ public class DebianPackageManager {
 			Log.v(BotBrewApp.TAG,"DebianPackageManager.pm_writeconf(): InterruptedException: cannot write configuration");
 			return false;
 		}
+*/
 		return success;
 	}
 	public static void pm_writeconf(final Context ctx) {
+/*
 		final BotBrewApp app = (BotBrewApp)ctx.getApplicationContext();
 		final DebianPackageManager dpm = new DebianPackageManager(app.root());
 		PreferenceManager.setDefaultValues(ctx,R.xml.preference,false);
 		dpm.config(PreferenceManager.getDefaultSharedPreferences(app));
 		dpm.pm_writeconf(app.getCacheDir());
+*/
 	}
 	public boolean pm_update() {
 		try {
-			Process p = exec(true,aptget_update());
+			Process p = exec(false, aptget_update());
 			p.getOutputStream().close();
 			BotBrewApp.sinkOutput(p);
 			BotBrewApp.sinkError(p);
@@ -260,6 +269,7 @@ public class DebianPackageManager {
 		}
 	}
 	public boolean pm_refresh(final ContentResolver cr, final boolean reload) {
+	        Log.d(BotBrewApp.TAG, "+pm_refresh");
 		Collection<ContentValues> values;
 		try {
 			ContentValues cv;
@@ -267,10 +277,10 @@ public class DebianPackageManager {
 			String line;
 			// installed packages
 			final HashMap<String,ContentValues> installed = new HashMap<String,ContentValues>();
-			Process p = exec(false,dpkgquery("--show --showformat='${status} ${package} ${version}\\n'"));
+			Process p = exec(false, dpkgquery("list-installed"));
 			p.getOutputStream().close();
 			BufferedReader p_stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			final Pattern re_name_version = Pattern.compile("^install ok installed (\\S+) (\\S+)$");
+			final Pattern re_name_version = Pattern.compile("^(\\S+) - (\\S+)$");
 			while((line = p_stdout.readLine()) != null) {
 				matcher = re_name_version.matcher(line);
 				if(matcher.find()) {
@@ -284,6 +294,8 @@ public class DebianPackageManager {
 			}
 			BotBrewApp.sinkError(p);
 			if(p.waitFor() != 0) return false;
+
+/*
 			// upgradable packages
 			final DebianPackageManager dpm = new DebianPackageManager(this);
 			dpm.config(Config.APT_Get_Simulate,"1");
@@ -301,6 +313,8 @@ public class DebianPackageManager {
 			}
 			BotBrewApp.sinkError(p);
 			if(p.waitFor() != 0) return false;
+*/
+
 			if(reload) {	// available packages
 				values = new ArrayList<ContentValues>();
 				p = exec(false,(new DebianPackageManager(root)).aptcache_search());
@@ -334,6 +348,7 @@ public class DebianPackageManager {
 		final ContentValues[] a = new ContentValues[values.size()];
 		values.toArray(a);
 		cr.bulkInsert(reload?PackageCacheProvider.ContentUri.UPDATE_RELOAD.uri:PackageCacheProvider.ContentUri.UPDATE_REFRESH.uri,a);
+	        Log.d(BotBrewApp.TAG, "-pm_refresh");
 		return true;
 	}
 	protected Shell.Pipe exec(final boolean superuser) throws IOException {
@@ -342,6 +357,7 @@ public class DebianPackageManager {
 		return sh;
 	}
 	protected Process exec(final boolean superuser, final CharSequence command) throws IOException {
+	        Log.d(BotBrewApp.TAG, "exec: " + command);
 		final Shell.Pipe sh = exec(superuser);
 		sh.botbrew(root,command);
 		return sh.proc;
