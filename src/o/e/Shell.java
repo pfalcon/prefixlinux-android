@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.util.Log;
+
 public abstract class Shell {
 	public static class Pipe extends Shell {
 		public final Process proc;
@@ -108,11 +110,16 @@ public abstract class Shell {
 		return botbrew(true,root,cmd);
 	}
 	public Shell botbrew(final boolean exec, final CharSequence root, final CharSequence cmd) throws IOException {
-		if(exec) in.write(("exec '"+root+"/init' -- "+cmd+"\n").getBytes());
-		else in.write(("'"+root+"/init' -- "+cmd+"\n").getBytes());
+		Log.d(BotBrewApp.TAG, "botbrew: root=" + root + ", cmd=" + cmd);
+
+		if(exec)
+		    in.write(("exec " + root + cmd + "\n").getBytes());
+		else
+		    in.write(("" + root + cmd + "\n").getBytes());
 		in.flush();
 		return this;
 	}
+/*
 	public Shell botbrew(final CharSequence init, final CharSequence root, final CharSequence cmd) throws IOException {
 		return botbrew(true,init,root,cmd);
 	}
@@ -122,4 +129,5 @@ public abstract class Shell {
 		in.flush();
 		return this;
 	}
+*/
 }
