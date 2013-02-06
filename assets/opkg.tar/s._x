@@ -1,0 +1,5 @@
+export PATH=/data/data/o.e/r/sbin:/data/data/o.e/r/bin:$PATH
+export HOME=/data/data/o.e/r
+
+echo "Starting shell if it exists. If it does not, you should source this file."
+/data/data/o.e/r/bin/sh
