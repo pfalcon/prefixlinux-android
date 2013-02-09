@@ -197,6 +197,7 @@ public class Main extends SherlockFragmentActivity {
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		final DebianPackageManager dpm = new DebianPackageManager(mApplication.root());
 		(new AsyncTask<Void,Void,Boolean>() {
+			boolean mUpdateStatus = true;
 			@Override
 			protected void onPreExecute() {
 				mLocked = true;
@@ -204,7 +205,9 @@ public class Main extends SherlockFragmentActivity {
 			@Override
 			protected Boolean doInBackground(final Void... ign) {
 				Log.v(BotBrewApp.TAG,"-> Main.onUpdateRequested("+update+")");
-				if(update) dpm.pm_update();
+				if (update) {
+				    mUpdateStatus = dpm.pm_update();
+				}
 				final boolean result = dpm.pm_refresh(getContentResolver(),update);
 				Log.v(BotBrewApp.TAG,"<- Main.onUpdateRequested("+update+")");
 				return result;
@@ -229,6 +232,10 @@ public class Main extends SherlockFragmentActivity {
 					pd.dismiss();
 				} catch(IllegalArgumentException ex) {
 					Log.wtf(BotBrewApp.TAG,ex);
+				}
+				if (!mUpdateStatus) {
+				Toast.makeText(Main.this, "Error updating package list from server",
+					       Toast.LENGTH_SHORT).show();
 				}
 			}
 		}).execute();
