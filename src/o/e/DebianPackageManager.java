@@ -258,7 +258,10 @@ public class DebianPackageManager {
 			p.getOutputStream().close();
 			BotBrewApp.sinkOutput(p);
 			BotBrewApp.sinkError(p);
-			if(p.waitFor() != 0) return false;
+			if(p.waitFor() != 0) {
+			    Log.e(BotBrewApp.TAG, "pm_update: Error updating package list");
+			    return false;
+			}
 			return true;
 		} catch(IOException e) {
 			Log.v(BotBrewApp.TAG,"DebianPackageManager.pm_update(): IOException: cannot refresh database");
