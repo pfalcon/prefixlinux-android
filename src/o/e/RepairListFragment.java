@@ -50,6 +50,7 @@ class RepairListLoader extends AsyncTaskLoader<ArrayList<String>> {
 	@Override
 	public ArrayList<String> loadInBackground() {	// called from AsyncTask
 		ArrayList<String> data = new ArrayList<String>();
+/*
 		try {
 			final Shell.Pipe sh = (Pipe)Shell.Pipe.getUserShell().botbrew(mApplication.root(),"reinstdb broken");
 			sh.stdin().close();
@@ -65,6 +66,7 @@ class RepairListLoader extends AsyncTaskLoader<ArrayList<String>> {
 		} catch(IOException ex) {
 		} catch(InterruptedException ex) {
 		}
+*/
 		return data;
 	}
 }
