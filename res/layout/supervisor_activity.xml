@@ -32,7 +32,7 @@
 		android:layout_height="wrap_content">
 		<fragment
 			android:id="@+id/servicelist"
-			android:name="com.botbrew.basil.ServiceListFragment"
+			android:name="o.e.ServiceListFragment"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content" />
 	</FrameLayout>
