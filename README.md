@@ -1,8 +1,8 @@
-Android GUI for OE-Android
-==========================
+Android GUI for PrefixLinux
+============================
 
 This is a fork of botbrew-gui (https://github.com/jyio/botbrew-gui) application
-for the need of OE-Android project (codename, may change). Main changes are
+for the need of PrefixLinux-Android project. Main changes are
 re-implementing support for opkg as the package manager and making it run without
 root privileges. Ideally, it would be nice to have support for both dpkg and opkg,
 and both root and non-root, but botbrew-gui codebase is not really well layered
@@ -10,7 +10,7 @@ and written to support that without major refactorings. So rather, this is a for
 which tears off complicated code from botbrew-gui to make it do one thing in
 more simple and clean way.
 
-Note that I'm currently build application using provided build.xml (which includes
+Note that I currently build application using provided build.xml (which includes
 some customizations to handle assets in sane way), so building using Maven as
 described below may or may not work. It's recommended to install dependent
 libraries manually and use build.xml for now.
